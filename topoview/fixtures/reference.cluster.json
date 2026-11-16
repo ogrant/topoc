@@ -1,0 +1,924 @@
+{
+  "formatVersion": 3,
+  "name": "reference",
+  "instances": [
+    {
+      "name": "Admin",
+      "group": "Admin",
+      "source": "Admin.xml",
+      "topics": [],
+      "queues": []
+    },
+    {
+      "name": "Infra1",
+      "group": "Infra",
+      "source": "Infra1.xml",
+      "topics": [
+        {
+          "name": "microprices",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/s"
+            ],
+            "keyNames": [
+              "/symbol"
+            ],
+            "durability": "transient",
+            "file": null,
+            "recoveryPoint": "now"
+          },
+          "journaled": true
+        },
+        {
+          "name": "orders/LN",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/order_id"
+            ],
+            "keyNames": [
+              "/order_id"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "orders/NY",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/order_id"
+            ],
+            "keyNames": [
+              "/order_id"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "ownership",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/isin"
+            ],
+            "keyNames": [
+              "/isin"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "refdata",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/s"
+            ],
+            "keyNames": [
+              "/symbol"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "signals/arbitrage",
+          "messageType": "json",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "signals/momentum",
+          "messageType": "json",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "tvgrids",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/isin"
+            ],
+            "keyNames": [
+              "/isin"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        }
+      ],
+      "queues": [
+        {
+          "name": "work/orders",
+          "kind": "distributed",
+          "messageType": "msgpack",
+          "underlyingTopic": "^(orders/LN|orders/NY)$",
+          "sources": [
+            "orders/LN",
+            "orders/NY"
+          ],
+          "defaultPublishTarget": "orders/LN",
+          "initialOwner": null,
+          "domain": null,
+          "semantics": "at-least-once",
+          "filter": null,
+          "filterNames": null,
+          "priority": null,
+          "priorityNames": null,
+          "barrier": null,
+          "barrierNames": null,
+          "settings": [
+            {
+              "name": "LeasePeriod",
+              "value": "60s"
+            },
+            {
+              "name": "MaxPerSubscriptionBacklog",
+              "value": "10"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Infra2",
+      "group": "Infra",
+      "source": "Infra2.xml",
+      "topics": [
+        {
+          "name": "microprices",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/s"
+            ],
+            "keyNames": [
+              "/symbol"
+            ],
+            "durability": "transient",
+            "file": null,
+            "recoveryPoint": "now"
+          },
+          "journaled": true
+        },
+        {
+          "name": "orders/LN",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/order_id"
+            ],
+            "keyNames": [
+              "/order_id"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "orders/NY",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/order_id"
+            ],
+            "keyNames": [
+              "/order_id"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "ownership",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/isin"
+            ],
+            "keyNames": [
+              "/isin"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "refdata",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/s"
+            ],
+            "keyNames": [
+              "/symbol"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        },
+        {
+          "name": "signals/arbitrage",
+          "messageType": "json",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "signals/momentum",
+          "messageType": "json",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "tvgrids",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/isin"
+            ],
+            "keyNames": [
+              "/isin"
+            ],
+            "durability": "persistent",
+            "file": "${AMPS_DIR}/sow/%n.sow",
+            "recoveryPoint": null
+          },
+          "journaled": true
+        }
+      ],
+      "queues": [
+        {
+          "name": "work/orders",
+          "kind": "distributed",
+          "messageType": "msgpack",
+          "underlyingTopic": "^(orders/LN|orders/NY)$",
+          "sources": [
+            "orders/LN",
+            "orders/NY"
+          ],
+          "defaultPublishTarget": "orders/LN",
+          "initialOwner": null,
+          "domain": null,
+          "semantics": "at-least-once",
+          "filter": null,
+          "filterNames": null,
+          "priority": null,
+          "priorityNames": null,
+          "barrier": null,
+          "barrierNames": null,
+          "settings": [
+            {
+              "name": "LeasePeriod",
+              "value": "60s"
+            },
+            {
+              "name": "MaxPerSubscriptionBacklog",
+              "value": "10"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quoting.LN",
+      "group": "Quoting.LN",
+      "source": "Quoting.LN.xml",
+      "topics": [
+        {
+          "name": "microprices",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "orders/LN",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "quotes",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/isin"
+            ],
+            "keyNames": [
+              "/isin"
+            ],
+            "durability": "transient",
+            "file": null,
+            "recoveryPoint": "now"
+          },
+          "journaled": true
+        },
+        {
+          "name": "refdata",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "tvgrids",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        }
+      ],
+      "queues": [
+        {
+          "name": "work/quotes",
+          "kind": "local",
+          "messageType": "msgpack",
+          "underlyingTopic": "quotes",
+          "sources": [
+            "quotes"
+          ],
+          "defaultPublishTarget": null,
+          "initialOwner": null,
+          "domain": null,
+          "semantics": "at-most-once",
+          "filter": null,
+          "filterNames": null,
+          "priority": null,
+          "priorityNames": null,
+          "barrier": null,
+          "barrierNames": null,
+          "settings": []
+        }
+      ]
+    },
+    {
+      "name": "Quoting.NY",
+      "group": "Quoting.NY",
+      "source": "Quoting.NY.xml",
+      "topics": [
+        {
+          "name": "microprices",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "orders/NY",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "quotes",
+          "messageType": "msgpack",
+          "sow": {
+            "keys": [
+              "/isin"
+            ],
+            "keyNames": [
+              "/isin"
+            ],
+            "durability": "transient",
+            "file": null,
+            "recoveryPoint": "now"
+          },
+          "journaled": true
+        },
+        {
+          "name": "refdata",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        },
+        {
+          "name": "tvgrids",
+          "messageType": "msgpack",
+          "sow": null,
+          "journaled": true
+        }
+      ],
+      "queues": [
+        {
+          "name": "work/quotes",
+          "kind": "local",
+          "messageType": "msgpack",
+          "underlyingTopic": "quotes",
+          "sources": [
+            "quotes"
+          ],
+          "defaultPublishTarget": null,
+          "initialOwner": null,
+          "domain": null,
+          "semantics": "at-most-once",
+          "filter": null,
+          "filterNames": null,
+          "priority": null,
+          "priorityNames": null,
+          "barrier": null,
+          "barrierNames": null,
+          "settings": []
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "name": "Admin",
+      "members": [
+        "Admin"
+      ]
+    },
+    {
+      "name": "Infra",
+      "members": [
+        "Infra1",
+        "Infra2"
+      ]
+    },
+    {
+      "name": "Quoting.LN",
+      "members": [
+        "Quoting.LN"
+      ]
+    },
+    {
+      "name": "Quoting.NY",
+      "members": [
+        "Quoting.NY"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "Infra1",
+      "targetKind": "instance",
+      "target": "Infra2",
+      "members": [
+        "Infra2"
+      ],
+      "destination": {
+        "name": "Infra",
+        "group": "Infra",
+        "syncType": "sync",
+        "addresses": [
+          "${INFRA2_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "refdata",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "microprices",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "ownership",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          },
+          {
+            "name": "tvgrids",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "orders/LN",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "orders/NY",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "signals/momentum",
+            "messageType": "json",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          },
+          {
+            "name": "signals/arbitrage",
+            "messageType": "json",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          },
+          {
+            "name": "work/orders",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          }
+        ]
+      }
+    },
+    {
+      "source": "Infra1",
+      "targetKind": "instance",
+      "target": "Quoting.LN",
+      "members": [
+        "Quoting.LN"
+      ],
+      "destination": {
+        "name": "Quoting.LN",
+        "group": "Quoting.LN",
+        "syncType": "async",
+        "addresses": [
+          "${QUOTING_LN_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "refdata",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "microprices",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "tvgrids",
+            "messageType": "msgpack",
+            "filter": "/owner LIKE 'LN/.*'",
+            "filterNames": "/owner LIKE 'LN/.*'",
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "Infra1",
+      "targetKind": "instance",
+      "target": "Quoting.NY",
+      "members": [
+        "Quoting.NY"
+      ],
+      "destination": {
+        "name": "Quoting.NY",
+        "group": "Quoting.NY",
+        "syncType": "async",
+        "addresses": [
+          "${QUOTING_NY_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "refdata",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "microprices",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "tvgrids",
+            "messageType": "msgpack",
+            "filter": "/owner LIKE 'NY/.*'",
+            "filterNames": "/owner LIKE 'NY/.*'",
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "Infra2",
+      "targetKind": "instance",
+      "target": "Infra1",
+      "members": [
+        "Infra1"
+      ],
+      "destination": {
+        "name": "Infra",
+        "group": "Infra",
+        "syncType": "sync",
+        "addresses": [
+          "${INFRA1_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "refdata",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "microprices",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "ownership",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          },
+          {
+            "name": "tvgrids",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "orders/LN",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "orders/NY",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade"
+            ]
+          },
+          {
+            "name": "signals/momentum",
+            "messageType": "json",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          },
+          {
+            "name": "signals/arbitrage",
+            "messageType": "json",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          },
+          {
+            "name": "work/orders",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": []
+          }
+        ]
+      }
+    },
+    {
+      "source": "Infra2",
+      "targetKind": "instance",
+      "target": "Quoting.LN",
+      "members": [
+        "Quoting.LN"
+      ],
+      "destination": {
+        "name": "Quoting.LN",
+        "group": "Quoting.LN",
+        "syncType": "async",
+        "addresses": [
+          "${QUOTING_LN_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "refdata",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "microprices",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "tvgrids",
+            "messageType": "msgpack",
+            "filter": "/owner LIKE 'LN/.*'",
+            "filterNames": "/owner LIKE 'LN/.*'",
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "Infra2",
+      "targetKind": "instance",
+      "target": "Quoting.NY",
+      "members": [
+        "Quoting.NY"
+      ],
+      "destination": {
+        "name": "Quoting.NY",
+        "group": "Quoting.NY",
+        "syncType": "async",
+        "addresses": [
+          "${QUOTING_NY_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "refdata",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "microprices",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          },
+          {
+            "name": "tvgrids",
+            "messageType": "msgpack",
+            "filter": "/owner LIKE 'NY/.*'",
+            "filterNames": "/owner LIKE 'NY/.*'",
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "Quoting.LN",
+      "targetKind": "group",
+      "target": "Infra",
+      "members": [
+        "Infra1",
+        "Infra2"
+      ],
+      "destination": {
+        "name": "Infra",
+        "group": "Infra",
+        "syncType": "async",
+        "addresses": [
+          "${INFRA1_REPLICATION_INETADDR}",
+          "${INFRA2_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "orders/LN",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "Quoting.NY",
+      "targetKind": "group",
+      "target": "Infra",
+      "members": [
+        "Infra1",
+        "Infra2"
+      ],
+      "destination": {
+        "name": "Infra",
+        "group": "Infra",
+        "syncType": "async",
+        "addresses": [
+          "${INFRA1_REPLICATION_INETADDR}",
+          "${INFRA2_REPLICATION_INETADDR}"
+        ],
+        "topics": [
+          {
+            "name": "orders/NY",
+            "messageType": "msgpack",
+            "filter": null,
+            "filterNames": null,
+            "excludedValidation": [
+              "cascade",
+              "replicate",
+              "sow"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [],
+  "fieldNames": true
+}

@@ -1,0 +1,32 @@
+{
+  "infra_instances": {
+    "A": {},
+    "B": {}
+  },
+  "pricing_instances": {
+    "Native": {},
+    "Backup": {}
+  },
+  "quoting_instances": {
+    "NY1": {
+      "quoters": {
+        "A": { "ois": 2 },
+        "B": { "ois": 2 }
+      }
+    },
+    "LN1": {
+      "quoters": {
+        "A": { "ois": 3 },
+        "B": { "ois": 3 },
+        "C": { "ois": 3 }
+      }
+    },
+    "LN2": {
+      "quoters": {
+        "D": { "ois": 3 },
+        "E": { "ois": 3 },
+        "F": { "ois": 3 }
+      }
+    }
+  }
+}

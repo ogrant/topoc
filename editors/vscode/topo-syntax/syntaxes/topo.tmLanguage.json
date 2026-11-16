@@ -1,0 +1,165 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Topo",
+  "scopeName": "source.topo",
+  "fileTypes": ["topo"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#placeholder" },
+    { "include": "#contextPath" },
+    { "include": "#loop" },
+    { "include": "#expirationModel" },
+    { "include": "#definition" },
+    { "include": "#use" },
+    { "include": "#dottedPath" },
+    { "include": "#definitionKeyword" },
+    { "include": "#definitionRef" },
+    { "include": "#string" },
+    { "include": "#topologyVerb" },
+    { "include": "#durabilityKind" },
+    { "include": "#property" },
+    { "include": "#type" },
+    { "include": "#constant" },
+    { "include": "#duration" },
+    { "include": "#number" },
+    { "include": "#arrow" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.double-slash.topo",
+      "match": "//.*$"
+    },
+    "placeholder": {
+      "comment": "a bare {{path}} outside a string: an attribute value taking the type of the value it names",
+      "name": "variable.other.interpolation.topo",
+      "begin": "\\{\\{",
+      "end": "\\}\\}",
+      "patterns": [{ "include": "#contextPath" }]
+    },
+    "contextPath": {
+      "comment": "`@` and a dotted field path (`@locations`, `@site.workers`): a `for` domain, or the start of a {{...}} path",
+      "name": "variable.other.constant.context.topo",
+      "match": "@[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*"
+    },
+    "loop": {
+      "comment": "template header: `for <var>[, <value>] in` (the domain follows as a name, a context path `@...` or an inline list)",
+      "match": "\\b(for)\\s+([A-Za-z_][A-Za-z0-9_]*)(?:\\s*(,)\\s*([A-Za-z_][A-Za-z0-9_]*))?\\s+(in)\\b",
+      "captures": {
+        "1": { "name": "keyword.control.loop.topo" },
+        "2": { "name": "variable.parameter.loop.topo" },
+        "3": { "name": "punctuation.separator.comma.topo" },
+        "4": { "name": "variable.parameter.loop.topo" },
+        "5": { "name": "keyword.control.loop.topo" }
+      }
+    },
+    "definition": {
+      "comment": "role/topic/queue/instance/list/topology-block definition keyword, or `type` in a context block, followed by the defined name (a topic's own `topology {` has no name, so it stays a property)",
+      "match": "\\b(role|topic|queue|instance|list|type|topology)\\s+([A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*)",
+      "captures": {
+        "1": { "name": "storage.type.topo" },
+        "2": { "name": "entity.name.type.topo" }
+      }
+    },
+    "use": {
+      "comment": "`use <block>, ...`: the topology blocks whose statements stand here",
+      "match": "\\b(use)\\s+([A-Za-z_][A-Za-z0-9_.]*(?:\\s*,\\s*[A-Za-z_][A-Za-z0-9_.]*)*)",
+      "captures": {
+        "1": { "name": "keyword.control.topology.topo" },
+        "2": { "name": "entity.name.type.topo" }
+      }
+    },
+    "dottedPath": {
+      "comment": "a dotted name or path (`instance.quoters`, `Quoting.key`) is never a keyword, whatever its segments spell: matched whole before the keyword rules",
+      "name": "meta.path.topo",
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)+"
+    },
+    "definitionKeyword": {
+      "comment": "a definition keyword not followed by a bare name, e.g. a topic named by a quoted string, or the context block",
+      "name": "storage.type.topo",
+      "match": "\\b(role|topic|queue|instance|list|context)\\b"
+    },
+    "definitionRef": {
+      "comment": "a topic's `definition` clause names its topic catalog entry by a ::-separated path",
+      "match": "\\b(definition)\\s+([A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*)",
+      "captures": {
+        "1": { "name": "keyword.other.definition.topo" },
+        "2": { "name": "entity.name.type.fqn.topo" }
+      }
+    },
+    "topologyVerb": {
+      "name": "keyword.control.topology.topo",
+      "match": "\\b(mesh|replicate|local|sow|where|owned\\s+by)\\b"
+    },
+    "durabilityKind": {
+      "name": "storage.modifier.durability.topo",
+      "match": "\\b(persistent|transient|at_least_once|at_most_once)\\b"
+    },
+    "property": {
+      "name": "keyword.other.property.topo",
+      "match": "\\b(attr|durability|topology|roles|group|file|recovery_point|from|publish_to|delivery|priority|barrier|target_depth|file_backed_metadata|deferred_ack_expiration|lease|leasing|max_deliveries|max_cancels|backlog|per_subscription_backlog|expiration|expiration_model|fairness)\\b"
+    },
+    "type": {
+      "name": "support.type.primitive.topo",
+      "match": "\\b(string|int|bool|selector)\\b"
+    },
+    "constant": {
+      "name": "constant.language.topo",
+      "match": "\\b(true|false|now|epoch|creation|strict|sublet|fast|round_robin|proportional|latest|earliest|default)\\b"
+    },
+    "expirationModel": {
+      "comment": "`expiration_model <value>`: `queue` here is a value, not a queue definition",
+      "match": "\\b(expiration_model)\\s+(queue|latest|earliest|default)\\b",
+      "captures": {
+        "1": { "name": "keyword.other.property.topo" },
+        "2": { "name": "constant.language.topo" }
+      }
+    },
+    "duration": {
+      "comment": "an amount and a unit: `60s`, `500ms`, `1d`",
+      "name": "constant.numeric.duration.topo",
+      "match": "\\b\\d+(?:ms|s|m|h|d)\\b"
+    },
+    "number": {
+      "name": "constant.numeric.integer.topo",
+      "match": "-?\\b\\d+\\b"
+    },
+    "arrow": {
+      "name": "keyword.operator.arrow.topo",
+      "match": "<->|->"
+    },
+    "string": {
+      "name": "string.quoted.double.topo",
+      "comment": "the delimiting quotes carry only the string scope, so they take the string's colour",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.topo",
+          "match": "\\\\[\"\\\\]"
+        },
+        {
+          "comment": "{{Role.attr}} (per target instance), {{var}} / {{var.Role.attr}} (per template iteration) and {{@context.path}} — expanded by the topo compiler",
+          "name": "variable.other.interpolation.topo",
+          "begin": "\\{\\{",
+          "end": "\\}\\}",
+          "patterns": [{ "include": "#contextPath" }]
+        },
+        {
+          "comment": "${...} — environment expansion, passed through verbatim",
+          "name": "constant.other.placeholder.env.topo",
+          "match": "\\$\\{[^}]*\\}"
+        },
+        {
+          "comment": "%n and friends — AMPS-native substitution, passed through verbatim",
+          "name": "constant.other.placeholder.amps.topo",
+          "match": "%[A-Za-z]"
+        },
+        {
+          "comment": "$route — the routed envelope's route in a filter, not a message field",
+          "name": "variable.language.route.topo",
+          "match": "\\$route\\b"
+        }
+      ]
+    }
+  }
+}

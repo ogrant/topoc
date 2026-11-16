@@ -1,0 +1,190 @@
+// Reference example for the .topo DSL — see docs/topo-dsl.md.
+//
+// A topic's contract (message, codec, SOW key, routing) is described by the
+// topic catalog entry its `definition` names; the `.topo` names it and
+// declares deployment (placement, replication, SOW materialisation/durability).
+// Deployment facts come from the generation context (reference.context.json).
+
+// -----------------------------------------------------------------------------
+// Context
+// -----------------------------------------------------------------------------
+
+context {
+  // One quoting instance per location, in this order.
+  quoting_locations: string[]
+}
+
+// -----------------------------------------------------------------------------
+// Roles
+// -----------------------------------------------------------------------------
+
+// Shared configuration applied to every instance
+role Basic {
+  attr admin_port: int = 9090
+}
+
+// Configuration for quoting instances
+role Quoting {
+  attr key: string
+}
+
+// -----------------------------------------------------------------------------
+// Instances
+// -----------------------------------------------------------------------------
+
+// Admin instance
+instance Admin {
+  roles [Basic]
+}
+
+// Two infrastructure instances forming the Infra replication group (HA pair)
+
+// Infra1 instance
+instance Infra1 {
+  roles [Basic]
+  group Infra
+}
+
+// Infra2 instance
+instance Infra2 {
+  roles [Basic]
+  group Infra
+}
+
+// One quoting instance per location, keyed by it. No group clause, so each
+// forms its own singleton group (their tvgrids content differs).
+for loc in @quoting_locations {
+  instance "Quoting.{{loc}}" {
+    roles [Basic, Quoting]
+    attr Quoting.key "{{loc}}"
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Topics
+// -----------------------------------------------------------------------------
+
+// Admin topic.
+topic admin {
+  definition market::topics::ADMIN
+  topology {
+    local Admin
+  }
+}
+
+// Reference data topic
+// Replicated across the Infra group for HA
+// Replicated from Infra to every Quoting instance
+topic refdata {
+  definition market::topics::REFDATA
+  topology {
+    mesh Infra
+    replicate Infra -> Quoting
+    sow Infra {
+      durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+    }
+  }
+}
+
+// Micro prices for underlier
+// Replicated across the Infra group for HA
+// Replicated from Infra to every Quoting instance
+topic microprices {
+  definition market::topics::MICROPRICES
+  topology {
+    mesh Infra
+    replicate Infra -> Quoting
+    sow Infra {
+      durability transient { recovery_point now }
+    }
+  }
+}
+
+// Ownership information - which quoting engine manages which ISIN
+// Replicated across the Infra group for HA
+// Used by TV grid generators to assign the owner of the form '<AMPS_INSTANCE>/<QUOTER_INSTANCE>'
+topic ownership {
+  definition market::topics::OWNERSHIP
+  topology {
+    mesh Infra
+    sow Infra {
+      durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+    }
+  }
+}
+
+// TV grids used for pricing
+// Replicated across the Infra group for HA
+// Replicated from Infra to each Quoting instance, filtered on /owner
+topic tvgrids {
+  definition market::topics::TVGRIDS
+  topology {
+    mesh Infra
+    replicate Infra -> Quoting where "/owner LIKE '{{Quoting.key}}/.*'"
+    sow Infra {
+      durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+    }
+  }
+}
+
+// Quotes
+// Topic is local to each Quoting instance and not replicated
+topic quotes {
+  definition market::topics::QUOTES
+  topology {
+    local Quoting
+    sow Quoting {
+      durability transient { recovery_point now }
+    }
+  }
+}
+
+// Orders, one topic per quoting instance: iterates over the instances carrying
+// role Quoting. Each quoter publishes its own topic, named after its key, to
+// the Infra pair, which meshes it for HA (the quoter fails over between them).
+for q in Quoting {
+  topic "orders/{{q.Quoting.key}}" {
+    definition market::topics::ORDERS
+    topology {
+      mesh Infra
+      replicate q -> Infra
+      sow Infra {
+        durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+      }
+    }
+  }
+}
+
+// Trading strategy processes, which are not AMPS instances.
+list Strategies [momentum, arbitrage]
+
+// Signals, one topic per strategy: iterates over a list of values.
+// Replicated across the Infra group for HA.
+for s in Strategies {
+  topic "signals/{{s}}" {
+    definition market::topics::SIGNALS
+    topology {
+      mesh Infra
+    }
+  }
+}
+// Order work: one distributed queue over every location's orders, shared by
+// the Infra pair (a publish to "work/orders" itself lands on orders/LN). Queue
+// names may not contain regular-expression characters such as '.'.
+queue "work/orders" {
+  from "orders/LN", "orders/NY"
+  publish_to "orders/LN"
+  delivery at_least_once { lease 60s per_subscription_backlog 10 }
+  topology {
+    mesh Infra
+  }
+}
+
+// Quote work: an independent queue on each quoting instance.
+queue "work/quotes" {
+  from quotes
+  delivery at_most_once { }
+  topology {
+    local Quoting
+  }
+}

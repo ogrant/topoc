@@ -1,0 +1,135 @@
+/* ============================================================
+   topoview design tokens, from Cartographer's
+   Light theme: :root  |  Dark theme: [data-theme="dark"]
+   ============================================================ */
+
+:root {
+  --color-bg:               #f7fafc;
+  --color-surface:          #ffffff;
+  --color-surface-2:        #f7fafc;
+  --color-border:           #e2e8f0;
+  --color-border-strong:    #cbd5e0;
+
+  --color-text:             #2d3748;
+  --color-text-muted:       #718096;
+  --color-text-faint:       #a0aec0;
+
+  --color-accent:           #4299e1;
+  --color-accent-hover:     #3182ce;
+  --color-accent-bg:        #ebf8ff;
+  --color-accent-border:    #bee3f8;
+  --color-accent-text:      #2b6cb0;
+
+  --color-danger:           #c53030;
+  --color-danger-bg:        #fff5f5;
+  --color-danger-border:    #feb2b2;
+  --color-danger-hover-bg:  #fed7d7;
+  --color-danger-hover-border: #fc8181;
+
+  --color-success:          #38a169;
+
+  --color-focus-ring:       rgba(66, 153, 225, 0.3);
+
+  /* Secondary accent (blue — kept semantic for edit/navigate actions) */
+  --color-secondary:        #4299e1;
+  --color-secondary-hover:  #3182ce;
+  --color-secondary-bg:     #ebf8ff;
+  --color-secondary-border: #bee3f8;
+  --color-secondary-text:   #2b6cb0;
+
+  /* Neutral button */
+  --color-neutral-bg:       #edf2f7;
+  --color-neutral-bg-hover: #e2e8f0;
+  --color-neutral-text:     #4a5568;
+
+  /* Topic highlight (green) */
+  --color-highlight:        #34eb34;
+  --color-highlight-ring:   rgba(52, 235, 52, 0.75);
+  --color-highlight-bg:     #f0fff4;
+  --color-highlight-text:   #276749;
+
+  /* Pills: SOW durability (persistent on disk, transient in memory) and
+     neutral facts (journal, message type) */
+  --color-persistent-bg:     #e9d8fd;
+  --color-persistent-text:   #553c9a;
+  --color-persistent-border: #b794f4;
+  --color-transient-bg:      #c4f1f9;
+  --color-transient-text:    #086f83;
+  --color-transient-border:  #76e4f7;
+  --color-queue-bg:          #feebc8;
+  --color-queue-text:        #9c4221;
+  --color-queue-border:      #f6ad55;
+  --color-pill-bg:           #e2e8f0;
+  --color-pill-text:         #2d3748;
+  --color-pill-border:       #cbd5e0;
+
+  /* Replication links */
+  --color-edge:             #a0aec0;
+  --color-edge-label-bg:    #ffffff;
+  --color-external:         #d69e2e;
+}
+
+[data-theme="dark"] {
+  --color-bg:               #1e1e2e;
+  --color-surface:          #2a2a3e;
+  --color-surface-2:        #24243a;
+  --color-border:           #3a3a5c;
+  --color-border-strong:    #4a4a6a;
+
+  --color-text:             #e2e8f0;
+  --color-text-muted:       #8892a4;
+  --color-text-faint:       #606880;
+
+  --color-accent:           #e07b39;
+  --color-accent-hover:     #f08c4a;
+  --color-accent-bg:        #2d1f0f;
+  --color-accent-border:    #6b3a1a;
+  --color-accent-text:      #f0a070;
+
+  --color-danger:           #fc8181;
+  --color-danger-bg:        #2d1010;
+  --color-danger-border:    #7a2020;
+  --color-danger-hover-bg:  #3d1515;
+  --color-danger-hover-border: #a03030;
+
+  --color-success:          #68d391;
+
+  --color-focus-ring:       rgba(224, 123, 57, 0.4);
+
+  /* Secondary accent (blue — adjusted for dark background legibility) */
+  --color-secondary:        #63b3ed;
+  --color-secondary-hover:  #90cdf4;
+  --color-secondary-bg:     #1a2a3a;
+  --color-secondary-border: #2a4a6a;
+  --color-secondary-text:   #90cdf4;
+
+  /* Neutral button */
+  --color-neutral-bg:       #2a2a3e;
+  --color-neutral-bg-hover: #3a3a5c;
+  --color-neutral-text:     #a0aec0;
+
+  /* Topic highlight (green) */
+  --color-highlight:        #34eb34;
+  --color-highlight-ring:   rgba(52, 235, 52, 0.75);
+  --color-highlight-bg:     #1a2d1a;
+  --color-highlight-text:   #9ae6b4;
+
+  /* Pills */
+  --color-persistent-bg:     #322659;
+  --color-persistent-text:   #d6bcfa;
+  --color-persistent-border: #6b46c1;
+  --color-transient-bg:      #0d3b45;
+  --color-transient-text:    #9decf9;
+  --color-transient-border:  #0987a0;
+  --color-queue-bg:          #3d2a12;
+  --color-queue-text:        #fbd38d;
+  --color-queue-border:      #c05621;
+  --color-pill-bg:           #3a3a5c;
+  --color-pill-text:         #e2e8f0;
+  --color-pill-border:       #4a4a6a;
+
+  /* Replication links */
+  --color-edge:             #606880;
+  --color-edge-label-bg:    #2a2a3e;
+  --color-external:         #ecc94b;
+}

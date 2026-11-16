@@ -1,0 +1,155 @@
+// -----------------------------------------------------------------------------
+// Context
+// -----------------------------------------------------------------------------
+
+context {
+  type infra_instance_info {
+  }
+
+  type pricing_instance_info {
+
+  }
+
+  type quoter_info {
+    ois: int
+  }
+
+  type quoting_instance_info {
+    quoters: quoter_info[string]
+  }
+
+  infra_instances: infra_instance_info[string]
+  pricing_instances: pricing_instance_info[string]
+  quoting_instances: quoting_instance_info[string]
+}
+
+// -----------------------------------------------------------------------------
+// Roles
+// -----------------------------------------------------------------------------
+
+role Basic {
+  attr admin_port: int = 9090
+}
+
+role ParamStore {}
+
+role Reporting {}
+
+role Pricing {
+  attr key: string
+}
+
+role Quoting {
+  attr key: string
+}
+
+// -----------------------------------------------------------------------------
+// Instances
+// -----------------------------------------------------------------------------
+
+// Infra instances
+for instance in @infra_instances {
+  instance "Infra.{{instance}}" {
+    roles [Basic, ParamStore, Reporting]
+    group Infra
+  }
+}
+
+// Pricing instances
+for instance in @pricing_instances {
+  instance "Pricing.{{instance}}" {
+    roles [Basic, Pricing]
+    attr Pricing.key "{{instance}}"
+  }
+}
+
+// Quoting instances
+for instance in @quoting_instances {
+  instance "Quoting.{{instance}}" {
+    roles [Basic, Quoting]
+    attr Quoting.key "{{instance}}"
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Topics
+// -----------------------------------------------------------------------------
+
+topology ha(target: group) {
+  mesh target
+  sow target {
+    durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+  }
+}
+
+topic Params {
+  definition market::topics::PARAMS
+  topology {
+    use ha(target = Infra)
+    replicate Infra -> Quoting
+    sow Quoting {
+      durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+    }
+  }
+}
+
+topic Ownership {
+  definition market::topics::OWNERSHIP
+  topology {
+    use ha(target = Infra)
+    replicate Infra -> Pricing
+    replicate Infra -> Quoting where "/owner LIKE '^{{Quoting.key}}/.*'"
+    sow Pricing, Quoting {
+      durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+    }
+  }
+}
+
+for instance in @pricing_instances {
+  topic "Grids/{{instance}}" {
+    definition market::topics::GRIDS
+    topology {
+      replicate "Pricing.{{instance}}" -> Quoting where "/owner LIKE '^{{Quoting.key}}/.*'"
+      sow "Pricing.{{instance}}", Quoting {
+        durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+      }
+    }
+  }
+}
+
+topic Quotes {
+  definition market::topics::QUOTES
+  topology {
+    local Quoting
+    sow Quoting {
+      durability transient { recovery_point now }
+    }
+  }
+}
+
+topic Trades {
+  definition market::topics::TRADES
+  topology {
+    replicate Quoting -> Reporting
+    sow Quoting, Reporting {
+      durability persistent { file "${AMPS_DIR}/sow/%n.sow" }
+    }
+  }
+}
+
+for instance in @quoting_instances {
+  for quoter in instance.quoters {
+    for i in quoter.ois {
+      queue "Orders/{{quoter}}/{{i}}" {
+        definition market::topics::ORDERS
+        delivery at_least_once {
+          lease 60s
+          per_subscription_backlog 10
+        }
+        topology {
+          local "Quoting.{{instance}}"
+        }
+      }
+    }
+  }
+}

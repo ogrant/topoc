@@ -1,0 +1,75 @@
+[
+  {
+    "definition": "market::topics::ADMIN",
+    "name_pattern": "admin",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": [],
+    "fields": [{ "name": "command", "wire_name": "command"}]
+  },
+  {
+    "definition": "market::topics::REFDATA",
+    "name_pattern": "refdata",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/s"],
+    "fields": [{ "name": "symbol", "wire_name": "s" }]
+  },
+  {
+    "definition": "market::topics::MICROPRICES",
+    "name_pattern": "microprices",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/s"],
+    "fields": [{ "name": "symbol", "wire_name": "s" }]
+  },
+  {
+    "definition": "market::topics::OWNERSHIP",
+    "name_pattern": "ownership",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/isin"],
+    "fields": [
+      { "name": "isin", "wire_name": "isin" },
+      { "name": "owner", "wire_name": "owner" }
+    ]
+  },
+  {
+    "definition": "market::topics::TVGRIDS",
+    "name_pattern": "tvgrids",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/isin"],
+    "fields": [
+      { "name": "isin", "wire_name": "isin" },
+      { "name": "owner", "wire_name": "owner" }
+    ]
+  },
+  {
+    "definition": "market::topics::QUOTES",
+    "name_pattern": "quotes",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/isin"],
+    "fields": [{ "name": "isin", "wire_name": "isin" }]
+  },
+  {
+    "definition": "market::topics::ORDERS",
+    "name_pattern": "orders/{}",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/order_id"],
+    "fields": [
+      { "name": "order_id", "wire_name": "order_id" },
+      { "name": "isin", "wire_name": "isin" }
+    ]
+  },
+  {
+    "definition": "market::topics::SIGNALS",
+    "name_pattern": "signals/{}",
+    "codec": "json",
+    "routed": false,
+    "wire_keys": [],
+    "fields": [{ "name": "isin", "wire_name": "isin" }]
+  }
+]

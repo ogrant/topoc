@@ -1,0 +1,191 @@
+{
+  "name": "topo-syntax",
+  "displayName": "Topo DSL",
+  "description": "Syntax highlighting and a language server client for the .topo topology DSL compiled by topoc",
+  "version": "1.0.0",
+  "publisher": "topoc",
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:topo"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "topo",
+        "aliases": [
+          "Topo",
+          "topo"
+        ],
+        "extensions": [
+          ".topo"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "topo",
+        "scopeName": "source.topo",
+        "path": "./syntaxes/topo.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.topo.codeblock",
+        "path": "./syntaxes/topo.markdown.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.topo": "topo"
+        }
+      }
+    ],
+    "configuration": {
+      "title": "Topo",
+      "properties": {
+        "topo.server.command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "topoc",
+            "lsp"
+          ],
+          "description": "Command starting the .topo language server, with its arguments. Empty turns it off."
+        },
+        "topo.contextFiles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Context JSON file for each topology whose context is not beside it (<name>.context.json or an env.yaml with a context section). Paths are absolute or relative to the workspace root."
+        }
+      }
+    },
+    "semanticTokenTypes": [
+      {
+        "id": "role",
+        "description": "A role"
+      },
+      {
+        "id": "attribute",
+        "description": "A role's attribute"
+      },
+      {
+        "id": "instance",
+        "description": "An instance"
+      },
+      {
+        "id": "group",
+        "description": "A group"
+      },
+      {
+        "id": "topic",
+        "description": "A topic"
+      },
+      {
+        "id": "queue",
+        "description": "A queue"
+      },
+      {
+        "id": "list",
+        "description": "A list"
+      },
+      {
+        "id": "topologyBlock",
+        "description": "A topology block"
+      },
+      {
+        "id": "contextField",
+        "description": "A context field (@field)"
+      },
+      {
+        "id": "contextType",
+        "description": "A context record type"
+      },
+      {
+        "id": "contextTypeField",
+        "description": "A field of a context record type"
+      },
+      {
+        "id": "loopVariable",
+        "description": "A for loop's variable"
+      },
+      {
+        "id": "blockParameter",
+        "description": "A topology block's parameter"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "topo",
+        "scopes": {
+          "role": [
+            "entity.name.type.topo"
+          ],
+          "instance": [
+            "entity.name.type.topo"
+          ],
+          "group": [
+            "entity.name.type.topo"
+          ],
+          "topic": [
+            "entity.name.type.topo"
+          ],
+          "queue": [
+            "entity.name.type.topo"
+          ],
+          "list": [
+            "entity.name.type.topo"
+          ],
+          "topologyBlock": [
+            "entity.name.type.topo"
+          ],
+          "contextType": [
+            "entity.name.type.topo"
+          ],
+          "attribute": [
+            "variable.other.property.topo"
+          ],
+          "contextTypeField": [
+            "variable.other.property.topo"
+          ],
+          "loopVariable": [
+            "variable.parameter.loop.topo"
+          ],
+          "contextField": [
+            "variable.other.constant.context.topo"
+          ],
+          "blockParameter": [
+            "variable.parameter.block.topo"
+          ]
+        }
+      }
+    ],
+    "configurationDefaults": {
+      "[topo]": {
+        "editor.semanticHighlighting.enabled": true
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ."
+  },
+  "dependencies": {
+    "vscode-languageclient": "9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.9",
+    "@types/vscode": "1.82.0",
+    "typescript": "5.4.5"
+  }
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "definition": "market::topics::PARAMS",
+    "name_pattern": "Params",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/pid"],
+    "fields": [{ "name": "productId", "wire_name": "pid" }]
+  },
+  {
+    "definition": "market::topics::OWNERSHIP",
+    "name_pattern": "Ownership",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/pid"],
+    "fields": [
+      { "name": "productId", "wire_name": "pid" },
+      { "name": "owner", "wire_name": "owner" }
+    ]
+  },
+  {
+    "definition": "market::topics::GRIDS",
+    "name_pattern": "Grids/{}",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/pid"],
+    "fields": [
+      { "name": "gridId", "wire_name": "gid" },
+      { "name": "productId", "wire_name": "pid" },
+      { "name": "owner", "wire_name": "owner" }
+    ]
+  },
+  {
+    "definition": "market::topics::QUOTES",
+    "name_pattern": "Quotes",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/pid"],
+    "fields": [{ "name": "productId", "wire_name": "pid" }]
+  },
+  {
+    "definition": "market::topics::ORDERS",
+    "name_pattern": "Orders/{}/{}",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/oid"],
+    "fields": [{ "name": "orderId", "wire_name": "oid" }]
+  },
+  {
+    "definition": "market::topics::TRADES",
+    "name_pattern": "Trades",
+    "codec": "msgpack",
+    "routed": false,
+    "wire_keys": ["/tid"],
+    "fields": [
+      { "name": "tradeId", "wire_name": "tid" },
+      { "name": "productId", "wire_name": "pid" }
+    ]
+  }
+]
